@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPORT APP v1.0</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/741/741407.png">
+
+    <style>
+        :root { --red: #cc0000; --black: #000000; --gray: #1a1a1a; }
+        body { background: var(--black); color: white; font-family: sans-serif; margin: 0; padding: 20px; padding-bottom: 50px; }
+        header { text-align: center; border-bottom: 3px solid var(--red); padding-bottom: 10px; margin-bottom: 20px; }
+        h1 { color: white; margin: 0; font-size: 1.5rem; }
+        .progress-container { background: #333; height: 12px; border-radius: 6px; margin-bottom: 20px; overflow: hidden; }
+        #progress-bar { background: var(--red); height: 100%; width: 0%; transition: 0.4s ease; }
+        .card { background: var(--gray); border-left: 5px solid var(--red); padding: 15px; margin-bottom: 15px; border-radius: 0 10px 10px 0; }
+        h2 { font-size: 1rem; color: var(--red); margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .check-item { display: flex; align-items: center; margin-bottom: 15px; font-size: 0.95rem; border-bottom: 1px solid #333; padding-bottom: 10px; cursor: pointer; }
+        input[type="checkbox"] { width: 24px; height: 24px; margin-right: 15px; accent-color: var(--red); cursor: pointer; }
+        input:checked + span { text-decoration: line-through; color: #666; }
+        .stats { text-align: center; font-size: 0.8rem; color: #888; margin-top: 5px; }
+        .btn-reset { background: #333; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; margin-top: 10px; font-size: 0.8rem; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>IMPORT APP PRO</h1>
+    <div class="stats">Checklist Inteligente de Importación</div>
+</header>
+
+<div class="progress-container">
+    <div id="progress-bar"></div>
+</div>
+
+<div class="card">
+    <h2>Fase 1: Compra (DE)</h2>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Revisión mecánica / DEKRA</span></label>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Verificación óxido (Elevador)</span></label>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Pago SEPA confirmado</span></label>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Documentación (Teil I y II)</span></label>
+</div>
+
+<div class="card">
+    <h2>Fase 2: Logística</h2>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Fotos detalladas antes carga</span></label>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Confirmación entrega en ES</span></label>
+</div>
+
+<div class="card">
+    <h2>Fase 3: Legalización</h2>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>ITV Importación OK</span></label>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Impuesto Matriculación (576)</span></label>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Placas Españolas físicas</span></label>
+</div>
+
+<div class="card">
+    <h2>Fase 4: Venta</h2>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Detallado / Limpieza Pro</span></label>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Seguro Garantía Activado</span></label>
+    <label class="check-item"><input type="checkbox" onclick="updateProgress()"><span>Anuncio en Portales Premium</span></label>
+</div>
+
+<button class="btn-reset" onclick="resetApp()">Limpiar para nuevo coche</button>
+
+<script>
+    // Al cargar la página, recuperar lo guardado
+    window.onload = () => {
+        const savedData = JSON.parse(localStorage.getItem('importChecklist') || '[]');
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((cb, index) => {
+            if (savedData[index]) cb.checked = true;
+        });
+        updateProgress();
+    };
+
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        
+        // Guardar estado
+        const dataToSave = Array.from(checkboxes).map(cb => cb.checked);
+        localStorage.setItem('importChecklist', JSON.stringify(dataToSave));
+        
+        // Actualizar barra
+        const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+        const percentage = (checked.length / checkboxes.length) * 100;
+        document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+
+    function resetApp() {
+        if(confirm("¿Seguro que quieres borrar todo para empezar con un coche nuevo?")) {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+    }
+</script>
+
+</body>
+</html>
